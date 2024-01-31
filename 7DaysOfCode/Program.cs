@@ -25,24 +25,29 @@ internal class Program
                 break;
             }
 
-            var pokemonEscolhido = pokemons[int.Parse(pokemonId)];
+            string pokemonEscolhido = default;
 
-            if (pokemonEscolhido != default)
+            try
             {
-                var client = new RestClient($"https://pokeapi.co/api/v2/pokemon/{pokemonEscolhido}");
-                var request = new RestRequest("", Method.Get);
-                var response = client.Execute(request);
-                var pokemon = JsonSerializer.Deserialize<Pokemon>(response.Content);
-
-                Console.WriteLine($"Nome pokemon: {pokemon.forms.FirstOrDefault().name}");
-                Console.WriteLine($"Altura: {pokemon.height}");
-                Console.WriteLine($"Peso: {pokemon.weight}");
-                Console.WriteLine($"Habilidades:");
-                pokemon.abilities.ForEach(a => Console.WriteLine(a.ability.name.ToUpper()));
+                pokemonEscolhido = pokemons[int.Parse(pokemonId)];
             }
-            else
+            catch (KeyNotFoundException)
             {
                 Console.WriteLine("Id não encontrado.");
+            }
+
+            if(pokemonEscolhido != default)
+            {
+                var client = new RestClient($"https://pokeapi.co/api/v2/pokemon/{pokemonEscolhido}");
+            var request = new RestRequest("", Method.Get);
+            var response = client.Execute(request);
+            var pokemon = JsonSerializer.Deserialize<Pokemon>(response.Content);
+
+            Console.WriteLine($"Nome pokemon: {pokemon.forms.FirstOrDefault().name}");
+            Console.WriteLine($"Altura: {pokemon.height}");
+            Console.WriteLine($"Peso: {pokemon.weight}");
+            Console.WriteLine($"Habilidades:");
+            pokemon.abilities.ForEach(a => Console.WriteLine(a.ability.name.ToUpper()));
             }
         }
     }
