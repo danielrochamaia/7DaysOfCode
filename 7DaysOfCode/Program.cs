@@ -39,15 +39,15 @@ internal class Program
             if(pokemonEscolhido != default)
             {
                 var client = new RestClient($"https://pokeapi.co/api/v2/pokemon/{pokemonEscolhido}");
-            var request = new RestRequest("", Method.Get);
-            var response = client.Execute(request);
-            var pokemon = JsonSerializer.Deserialize<Pokemon>(response.Content);
+                var request = new RestRequest("", Method.Get);
+                var response = client.Execute(request);
+                var pokemon = JsonSerializer.Deserialize<Pokemon>(response.Content);
 
-            Console.WriteLine($"Nome pokemon: {pokemon.forms.FirstOrDefault().name}");
-            Console.WriteLine($"Altura: {pokemon.height}");
-            Console.WriteLine($"Peso: {pokemon.weight}");
-            Console.WriteLine($"Habilidades:");
-            pokemon.abilities.ForEach(a => Console.WriteLine(a.ability.name.ToUpper()));
+                Console.WriteLine($"Nome pokemon: {pokemon.forms.FirstOrDefault().name}");
+                Console.WriteLine($"Altura: {pokemon.height}");
+                Console.WriteLine($"Peso: {pokemon.weight}");
+                Console.WriteLine($"Habilidades:");
+                pokemon.abilities.ForEach(a => Console.WriteLine(a.ability.name.ToUpper()));
             }
         }
     }
