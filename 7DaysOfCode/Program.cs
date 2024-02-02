@@ -23,7 +23,7 @@ internal class Program
     {
         var menuPrincipal = new Dictionary<string, string> { { "1", "Adotar um mascote virtual" }, { "2", "Ver seus mascotes" }, { "3", "Sair" } };
 
-        PrintHeader("MENU", 30);
+        PrintHeader("MENU");
         Console.WriteLine($"{person.Name}, o que você deseja?");
         ShowOptions(menuPrincipal);
         Console.Write("Escolha: ");
@@ -62,7 +62,7 @@ internal class Program
     private static void AdoptAPet(Person person)
     {
         var pokemons = new Dictionary<string, string> { { "1", "pikachu" }, { "2", "bulbasaur" }, { "3", "charmander" }, { "4", "meowth" }, { "5", "zapdos" }, { "6", "mewtwo" } };
-        PrintHeader("ADOTAR UM MASCOTE", 23);
+        PrintHeader("ADOTAR UM MASCOTE");
         Console.WriteLine("Escolha uma espécie: ");
         ShowOptions(pokemons);
         Console.Write("Escolha: ");
@@ -103,7 +103,7 @@ internal class Program
 
     private static void ShowPets(Person person)
     {
-        PrintHeader("SEUS MASCOTES", 26);
+        PrintHeader("SEUS MASCOTES");
 
         var pets = person.Pets;
 
@@ -130,7 +130,7 @@ internal class Program
         }
     }
 
-    private static void PrintHeader(string header, int len = 0)
+    private static void PrintHeader(string header)
     {
         Thread.Sleep(500);
         Console.Write(".");
@@ -139,12 +139,14 @@ internal class Program
         Thread.Sleep(500);
         Console.Write(".\n");
 
+        var len = (64 - header.Length) / 2;
+
+
         var hyphens = new StringBuilder();
         for(var i = 0; i < len; i++)
         {
             hyphens.Append('-');
         }
-        
 
         if (header != "")
         {
