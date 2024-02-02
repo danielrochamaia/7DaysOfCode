@@ -1,54 +1,158 @@
 ﻿using _7DaysOfCode.Entities;
 using RestSharp;
+using System;
+using System.Linq.Expressions;
+using System.Text;
 using System.Text.Json;
+using System.Xml.Linq;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        var pokemons = new Dictionary<int, string> { { 1, "pikachu" }, { 2, "bulbasaur" }, { 3, "charmander" }, { 4, "meowth" }, { 5, "zapdos" }, { 6, "mewtwo" }, { 0, "encerrar" } };
+        Console.WriteLine("Tamagotchi\n");
+        Console.Write("Qual é o seu nome? ");
+        var name = Console.ReadLine();
+        var person = new Person(name);
 
-        Console.WriteLine("Pokemons disponíveis para consulta: ");
+        MainMenu(person);
 
-        foreach (var p in pokemons)
+    }
+
+    private static void MainMenu(Person person)
+    {
+        var menuPrincipal = new Dictionary<string, string> { { "1", "Adotar um mascote virtual" }, { "2", "Ver seus mascotes" }, { "3", "Sair" } };
+
+        PrintHeader("MENU", 30);
+        Console.WriteLine($"{person.Name}, o que você deseja?");
+        ShowOptions(menuPrincipal);
+        Console.Write("Escolha: ");
+        var menuOption = Console.ReadLine();
+
+        switch (menuOption)
         {
-            Console.WriteLine($"{p.Key} - {p.Value}");
+            case "1":
+                AdoptAPet(person);
+                break;
+            case "2":
+                ShowPets(person);
+                break;
+            default:
+                Console.WriteLine("\nAté mais!");
+                break;
+        }
+    }
+
+    private static void ShowPetInfo(Person person, string chosenPet)
+    {
+        PrintHeader("");
+        var client = new RestClient($"https://pokeapi.co/api/v2/pokemon/{chosenPet}");
+        var request = new RestRequest("", Method.Get);
+        var response = client.Execute(request);
+        var pokemon = JsonSerializer.Deserialize<Pokemon>(response.Content);
+
+        Console.WriteLine($"Nome pokemon: {pokemon.forms.FirstOrDefault().name}");
+        Console.WriteLine($"Altura: {pokemon.height}");
+        Console.WriteLine($"Peso: {pokemon.weight}");
+        Console.WriteLine($"Habilidades:");
+        pokemon.abilities.ForEach(a => Console.WriteLine(a.ability.name.ToUpper()));
+        MenuInterno(person, chosenPet);
+    }
+
+    private static void AdoptAPet(Person person)
+    {
+        var pokemons = new Dictionary<string, string> { { "1", "pikachu" }, { "2", "bulbasaur" }, { "3", "charmander" }, { "4", "meowth" }, { "5", "zapdos" }, { "6", "mewtwo" } };
+        PrintHeader("ADOTAR UM MASCOTE", 23);
+        Console.WriteLine("Escolha uma espécie: ");
+        ShowOptions(pokemons);
+        Console.Write("Escolha: ");
+        var chosenPet = pokemons[Console.ReadLine()];
+
+        MenuInterno(person, chosenPet);
+    }
+
+    private static void MenuInterno(Person person, string chosenPet)
+    {
+        PrintHeader("");
+        var menuInterno = CreateDictMenuInterno(chosenPet);
+        Console.WriteLine("Você deseja: ");
+        ShowOptions(menuInterno);
+        Console.Write("Escolha: ");
+        var escolha = Console.ReadLine();
+
+        switch (escolha)
+        {
+            case "1":
+                ShowPetInfo(person, chosenPet);
+                break;
+            case "2":
+                AdotarPet(person, chosenPet);
+                break;
+            default:
+                MainMenu(person);
+                break;
+        }
+    }
+
+    private static void AdotarPet(Person person, string chosenPet)
+    {
+        PrintHeader("");
+        Console.WriteLine(person.AddPet(chosenPet));
+        MainMenu(person);
+    }
+
+    private static void ShowPets(Person person)
+    {
+        PrintHeader("SEUS MASCOTES", 26);
+
+        var pets = person.Pets;
+
+        if (pets.Count > 0)
+        {
+            pets.ForEach(Console.WriteLine);
+        }
+        else
+        {
+            Console.WriteLine("Você não tem nenhum mascote ainda.");
         }
 
-        while (true)
+        MainMenu(person);
+    }
+
+    private static Dictionary<string, string> CreateDictMenuInterno(string chosenPet)
+        => new Dictionary<string, string> { { "1", $"Saber mais sobre {chosenPet}" }, { "2", $"Adotar {chosenPet}" }, { "3", "Voltar" } };
+
+    private static void ShowOptions(Dictionary<string, string> dict)
+    {
+        foreach (var i in dict)
         {
-            Console.Write("\nInsira o id do pokemon para verificar seus atributos: ");
-            var pokemonId = Console.ReadLine();
-            if(pokemonId == "0")
-            {
-                Console.WriteLine("Até mais!");
-                break;
-            }
+            Console.WriteLine($"{i.Key} - {i.Value}");
+        }
+    }
 
-            string pokemonEscolhido = default;
+    private static void PrintHeader(string header, int len = 0)
+    {
+        Thread.Sleep(500);
+        Console.Write(".");
+        Thread.Sleep(500);
+        Console.Write(".");
+        Thread.Sleep(500);
+        Console.Write(".\n");
 
-            try
-            {
-                pokemonEscolhido = pokemons[int.Parse(pokemonId)];
-            }
-            catch (KeyNotFoundException)
-            {
-                Console.WriteLine("Id não encontrado.");
-            }
+        var hyphens = new StringBuilder();
+        for(var i = 0; i < len; i++)
+        {
+            hyphens.Append('-');
+        }
+        
 
-            if(pokemonEscolhido != default)
-            {
-                var client = new RestClient($"https://pokeapi.co/api/v2/pokemon/{pokemonEscolhido}");
-                var request = new RestRequest("", Method.Get);
-                var response = client.Execute(request);
-                var pokemon = JsonSerializer.Deserialize<Pokemon>(response.Content);
-
-                Console.WriteLine($"Nome pokemon: {pokemon.forms.FirstOrDefault().name}");
-                Console.WriteLine($"Altura: {pokemon.height}");
-                Console.WriteLine($"Peso: {pokemon.weight}");
-                Console.WriteLine($"Habilidades:");
-                pokemon.abilities.ForEach(a => Console.WriteLine(a.ability.name.ToUpper()));
-            }
+        if (header != "")
+        {
+            Console.WriteLine($"{hyphens} {header} {hyphens}");
+        }
+        else
+        {
+            Console.WriteLine($"------------------------------------------------------------------");
         }
     }
 }
