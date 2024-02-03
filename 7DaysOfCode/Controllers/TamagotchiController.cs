@@ -11,7 +11,7 @@ namespace _7DaysOfCode.Controllers
             Console.Write($"Qual é o seu nome? ");
             var name = Console.ReadLine();
             var person = new Person(name);
-            TomagotchiService.MainMenu(person);
+            MenuService.MainMenu(person);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace _7DaysOfCode.Services
 {
-    public static class TomagotchiService
+    public static class MenuService
     {
         public static void MainMenu(Person person)
         {

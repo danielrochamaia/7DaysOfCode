@@ -10,6 +10,8 @@ namespace _7DaysOfCode.Services
             return new Settings().GetSettings();
         }
 
+        public static int RandomStartLevel() => new Random().Next(1,7);
+
         public static void ShowOptions(Dictionary<string, string> dict)
         {
             foreach (var i in dict)
@@ -18,14 +20,19 @@ namespace _7DaysOfCode.Services
             }
         }
 
+        public static void PrintWaiting()
+        {
+            Thread.Sleep(350);
+            Console.Write(".");
+            Thread.Sleep(350);
+            Console.Write(".");
+            Thread.Sleep(350);
+            Console.Write(".\n");
+        }
+
         public static void PrintHeader(string header)
         {
-            Thread.Sleep(500);
-            Console.Write(".");
-            Thread.Sleep(500);
-            Console.Write(".");
-            Thread.Sleep(500);
-            Console.Write(".\n");
+            PrintWaiting();
 
             var len = (64 - header.Length) / 2;
 
