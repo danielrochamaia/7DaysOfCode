@@ -1,4 +1,6 @@
 ﻿using _7DaysOfCode.Entities;
+using _7DaysOfCode.Models.Entities;
+using AutoMapper;
 
 namespace _7DaysOfCode.Services
 {
@@ -38,13 +40,20 @@ namespace _7DaysOfCode.Services
             Console.Write("Escolha: ");
             var menuOption = Console.ReadLine();
 
+            var pokemonObj = PetService.GetPokemonInfo(chosenPet);
+            var config = new MapperConfiguration(
+                cfg => cfg.CreateMap<Pokemon, Pet>()
+                .ForMember(dest => dest.Name, m => m.MapFrom(a => a.forms.First().name)));
+            var mapper = new Mapper(config);
+            var chosenPokemon = mapper.Map<Pet>(pokemonObj);
+
             switch (menuOption)
             {
                 case "1":
                     PetService.ShowSelectedPetInfo(person, chosenPet);
                     break;
                 case "2":
-                    PersonService.AdoptSelectedPet(person, chosenPet);
+                    PersonService.AdoptSelectedPet(person, chosenPokemon);
                     break;
                 default:
                     MainMenu(person);
