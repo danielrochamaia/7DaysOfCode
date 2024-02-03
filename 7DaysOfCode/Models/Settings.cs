@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace _7DaysOfCode.Models
 {
@@ -10,8 +11,10 @@ namespace _7DaysOfCode.Models
 
         public Settings GetSettings()
         {
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddJsonFile(@"C:\Users\danro\source\repos\Git\7DaysOfCode\7DaysOfCode\appsettings.json")
+            var directory = Directory.GetCurrentDirectory().Split("bin").FirstOrDefault();
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(directory)
+                .AddJsonFile("appsettings.json")
                 .Build();
 
             return configuration.GetSection("Settings").Get<Settings>();
