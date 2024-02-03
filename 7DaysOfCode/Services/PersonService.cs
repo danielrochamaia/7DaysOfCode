@@ -31,16 +31,15 @@ namespace _7DaysOfCode.Services
             PetService.SelectPetToCare(person, chosenPetObject);
         }
 
-        public static void AdoptSelectedPet(Person person, string chosenPet)
+        public static void AdoptSelectedPet(Person person, Pet chosenPet)
         {
             Utils.PrintHeader("");
-            var chonsenPetInfo = PetService.GetPokemonInfo(chosenPet);
             var newPet = new Pet
             {   
                 Id = person.Pets.Count+1,
-                Name = chonsenPetInfo.forms.FirstOrDefault().name,
-                Height = chonsenPetInfo.height,
-                Weight = chonsenPetInfo.weight,
+                Name = chosenPet.Name,
+                Height = chosenPet.Height,
+                Weight = chosenPet.Weight,
                 HungerLevel = Utils.RandomStartLevel(),
                 MoodLevel = Utils.RandomStartLevel(),
                 ThirstLevel = Utils.RandomStartLevel(),
