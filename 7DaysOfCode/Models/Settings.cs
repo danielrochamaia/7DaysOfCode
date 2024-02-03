@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.Reflection;
 
 namespace _7DaysOfCode.Models
 {

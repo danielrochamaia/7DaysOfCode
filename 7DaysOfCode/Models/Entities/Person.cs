@@ -16,10 +16,11 @@ namespace _7DaysOfCode.Entities
 
         public string AddPet(Pet pet)
         {
-            //if(Pets.Contains(pet))
-            //{
-            //    Console.WriteLine("Você já adotou esse mascote! Escolha um diferente.");
-            //}
+            var existingPet = Pets.Where(p => p.Name == pet.Name).FirstOrDefault();
+            if (existingPet != default)
+            {
+                return "Você já adotou esse mascote! Escolha um diferente.";
+            }
 
             Pets.Add(pet);
             return "Mascote adotado com sucesso!";
